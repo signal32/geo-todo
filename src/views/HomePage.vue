@@ -1,38 +1,60 @@
 <template>
-  <ion-page>
-    <ion-header :translucent="true">
-      <ion-toolbar>
-        <ion-title>Blank</ion-title>
-      </ion-toolbar>
-    </ion-header>
+    <ion-page>
+        <ion-header :translucent="true">
+            <ion-toolbar>
+                <ion-title>Hello World</ion-title>
+            </ion-toolbar>
+        </ion-header>
     
-    <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Blank</ion-title>
-        </ion-toolbar>
-      </ion-header>
-    
-      <div id="container">
-        <strong>Ready to create an app?</strong>
-        <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-      </div>
-    </ion-content>
-  </ion-page>
+        <ion-content :fullscreen="true">
+            <ion-header collapse="condense">
+                <ion-toolbar>
+                    <ion-title size="large">Hello World</ion-title>
+                </ion-toolbar>
+            </ion-header>
+
+            <ion-button @click="setOrder('name')">Order by Name</ion-button>
+            <ion-button @click="setOrder('id')">Order by ID</ion-button>
+        
+            <div id="container">
+                <TodoList :locations="locations" :order="order"/>
+            </div>
+            <p>{{order}}</p>
+        </ion-content>
+    </ion-page>
 </template>
 
 <script lang="ts">
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
-import { defineComponent } from 'vue';
+import TodoList from '@/components/TodoList.vue';
+import Location from '@/types/Location'
+import OrderTerm from '@/types/OrderTerm'
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
-  components: {
-    IonContent,
-    IonHeader,
-    IonPage,
-    IonTitle,
-    IonToolbar
-  }
+    components: {
+        IonContent,
+        IonHeader,
+        IonPage,
+        IonTitle,
+        IonToolbar,
+        TodoList,
+    },
+
+    setup() {
+        const locations = ref<Location[]>([
+        { id: "1", name: "xcafe", description: "", lng: 0.0, lat: 0.0 },
+        { id: "2", name: "pub", description: "", lng: 0.1, lat: 0.0 }
+        ]);
+
+        const order = ref<OrderTerm>('id');
+
+        const setOrder = (term: OrderTerm) => {
+            order.value = term;
+        }
+    
+        return {locations, setOrder, order};
+    },
 });
 </script>
 
