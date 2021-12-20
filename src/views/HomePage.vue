@@ -2,7 +2,7 @@
     <ion-page>
         <ion-header :translucent="true">
             <ion-toolbar>
-                <ion-title>Hello World</ion-title>
+                <ion-title>GeoTodo</ion-title>
             </ion-toolbar>
         </ion-header>
     
@@ -13,24 +13,30 @@
                 </ion-toolbar>
             </ion-header>
 
-            <ion-button @click="setOrder('name')">Order by Name</ion-button>
-            <ion-button @click="setOrder('id')">Order by ID</ion-button>
-        
-            <div id="container">
-                <TodoList :locations="locations" :order="order"/>
+            <div id="Map">
+                <map-element :locations="locations"/>
             </div>
-            <p>{{order}}</p>
 
             <ion-fab vertical="bottom" horizontal="end" slot="fixed">
                 <ion-fab-button @click="router.push('/edit')">+</ion-fab-button>
+                <ion-fab-button @click="showModal = !showModal">!</ion-fab-button>
             </ion-fab>
+
+            <ion-modal :is-open="showModal" :backdrop-dismiss="true" :breakpoints="[0.4, 0.5, 1]" :initialBreakpoint="0.5">
+                <ion-content>
+                    <ion-button @click="setOrder('name')">Order by Name</ion-button>
+                    <ion-button @click="setOrder('id')">Order by ID</ion-button>
+                    <TodoList :locations="locations" :order="order"/>
+                </ion-content>
+            </ion-modal>
         </ion-content>
     </ion-page>
 </template>
 
 <script lang="ts">
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonFab, IonFabButton, IonButton } from '@ionic/vue';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonFab, IonFabButton, IonButton, IonModal } from '@ionic/vue';
 import TodoList from '@/components/TodoList.vue';
+import MapElement from '@/components/MapElement.vue';
 import Location from '@/types/Location'
 import OrderTerm from '@/types/OrderTerm'
 import { defineComponent, ref } from 'vue';
@@ -49,6 +55,8 @@ export default defineComponent({
         IonFab,
         IonFabButton,
         IonButton,
+        IonModal,
+        MapElement,
     },
 
     setup() {
@@ -65,16 +73,22 @@ export default defineComponent({
         const setOrder = (term: OrderTerm) => {
             order.value = term;
         }
-
+        const showModal = ref(true);
         //const locations = ref<Location[]>(store.state.items); //refs fuck this up when using store?
         const locations = store.state.items;
     
-        return {locations, setOrder, order, router};
+        return {locations, setOrder, order, router, showModal};
     },
 });
 </script>
 
 <style scoped>
+
+#Map {
+    width: 100vw;
+    height: 100vh;
+}
+
 #container {
   text-align: center;
   
