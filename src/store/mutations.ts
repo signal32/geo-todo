@@ -1,5 +1,5 @@
 import { MutationTree } from "vuex";
-import { State } from "./state";
+import { RootState } from "./rootState";
 import Location from "@/types/Location";
 
 export enum MutationType {
@@ -10,12 +10,12 @@ export enum MutationType {
 
 export type Mutations = {
     // [mutation](input args):output args
-    [MutationType.CreateItem](state: State, item: Location): void,  
-    [MutationType.SetItems](state: State, items: Location[]): void,
-    [MutationType.CompleteItem](state: State, item: Partial<Location> & {id: number}): void
+    [MutationType.CreateItem](state: RootState, item: Location): void,  
+    [MutationType.SetItems](state: RootState, items: Location[]): void,
+    [MutationType.CompleteItem](state: RootState, item: Partial<Location> & {id: number}): void
 }
 
-export const mutations: MutationTree<State> & Mutations = {
+export const mutations: MutationTree<RootState> & Mutations = {
     [MutationType.CreateItem](state, item) {
         state.items.unshift(item);
     },

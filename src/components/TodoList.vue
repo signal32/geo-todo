@@ -5,7 +5,7 @@
             <ion-label>{{name}}</ion-label>
         </ion-item>
         <ion-item v-for="location in orderedLocations" :key="location.id">
-            <ion-label>{{location.name}} {{location.id}}</ion-label>
+            <ion-label @click="$emit('locationSelected', location.id)">{{location.name}} {{location.id}}</ion-label>
         </ion-item>
     </ion-list>
     <ion-button @click="changeName('fuck off')">Change Name</ion-button>

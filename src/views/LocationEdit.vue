@@ -66,7 +66,7 @@ export default defineComponent({
     },
     setup() {
         const location = ref<Location>({
-             id: "1",
+             id: Math.random().toString(),
              name: "",
              description: "",
              lat: 0.0,

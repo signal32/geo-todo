@@ -1,28 +1,36 @@
-import { 
-    createStore, 
-    createLogger, 
-    Store as VuexStore,
-    CommitOptions,
-    DispatchOptions, } from "vuex";
-
-import { State, state } from "./state";
+import { createLogger, StoreOptions, CommitOptions, DispatchOptions, Store as VuexStore } from "vuex";
+import { RootState, defaultRootState } from "./rootState";
 import { Mutations, mutations } from "./mutations";
 import { Actions, actions} from "./actions";
 import { Getters, getters } from "./getters";
+import { location } from "./location";
 
-export const store = createStore<State>({
+const storeConfig: StoreOptions<RootState> = {
     plugins: process.env.NODE_ENV === 'development' ? [createLogger()] : [],
-    state,
+    state: defaultRootState,
     mutations,
     actions,
-    getters
-})
+    getters,
+    modules: {
+        location
+    },
+};
 
-export function useStore(){
-    return store as Store
+export const store =  new VuexStore<RootState>(storeConfig) as Store;
+
+/**
+ * Get the global store instance
+ * @returns Current global store instance
+ */
+export function useStore(): Store{
+    return store
 }
 
-export type Store = Omit<VuexStore<State>,'getters' | 'commit' | 'dispatch'>
+
+/**
+ * Custom type to give ts knowledge of getters, mutations and actions.
+ */
+export type Store = Omit<VuexStore<RootState>,'getters' | 'commit' | 'dispatch'>
  & {
     commit<K extends keyof Mutations, P extends Parameters<Mutations[K]>[1]>(
         key: K,

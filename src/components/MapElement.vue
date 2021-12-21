@@ -1,5 +1,5 @@
 <template>
-   <div id="mapContainer"></div>
+   <div id="mapContainer" style="background-color: #191A1A"></div>
 </template>
 
 <script lang="ts">
@@ -11,22 +11,24 @@ const token = 'pk.eyJ1Ijoic2lnbmFsMzIiLCJhIjoiY2t4ZDRiN3E5M2FlaTMwbzEwaWl1dndscS
 //const token = '';
 
 export default defineComponent({
+    emits: ["locationSelected"],
     props: {
         locations: {required: true, type: Array as PropType<Location[]>},
     },
-    setup(props) {
+    setup(props, context) {
         watch(props.locations, (now, prev) => {
             console.log("arranging markers");
-            
              markers.value.forEach(e => {
                  e.remove();
              })
              markers.value.length = 0;
-            
             now.forEach(element => {
                 markers.value.unshift(
                     L.marker([element.lng, element.lat])
-                    .on("click", () => alert(`You clicked on ${element.name}`))
+                    .on("click", () => {
+                        //console.log(`You clicked on ${element.name}`);
+                        context.emit("locationSelected", element);
+                    })
                     .addTo(map.value as any))
             });
         })
@@ -37,7 +39,12 @@ export default defineComponent({
         return { markers, map }
     },
     mounted() {
-        this.map = L.map('mapContainer').setView([37.7749, -122.4194], 13);
+        this.map = L.map('mapContainer')
+            .on('load', () => { setTimeout(() => {
+                this.map?.invalidateSize();
+            }, 1); })
+            .on('zoom', () => console.log(this.map?.getZoom()))
+            .setView([0,0], 4);
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',{
             attribution: 'Yeet',
             maxZoom: 10,
@@ -49,11 +56,16 @@ export default defineComponent({
 
         const marker = L.marker([37.7749, -122.4194]).addTo(this.map as any);
 
-        this.map.whenReady(() => this.map?.invalidateSize() )
+/*        this.map.on('load', () => { setTimeout(() => {
+            this.map?.invalidateSize();
+            alert("i did a thing!");
+        }, 1); });*/
+        //this.map.on('click', () => alert("yo bitches"));
         //return map;
     },
 })
 </script>
+
 
 <style scoped>
 #mapContainer {
